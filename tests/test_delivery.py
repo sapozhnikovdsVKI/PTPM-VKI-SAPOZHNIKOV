@@ -1,6 +1,6 @@
 import unittest
 import datetime
-from src.delivery import calculate_delivery_cost  # Импортируем из папки src
+from src.Delivery import calculate_delivery_cost  # Импортируем из папки src
 
 class TestDeliveryCost(unittest.TestCase):
     
