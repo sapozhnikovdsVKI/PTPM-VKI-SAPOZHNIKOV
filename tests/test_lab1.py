@@ -1,6 +1,6 @@
 import unittest
 import math
-from src.my_project import get_triangle_info
+from src.test import get_triangle_info
 
 class TestTriangleInfo(unittest.TestCase):
     """Тесты для функции get_triangle_info"""
