@@ -124,6 +124,5 @@ class TestConverter(unittest.TestCase):
         """x = -0.1 (чуть ниже 0) -> -5"""
         self.assertEqual(Converter.do(-0.1), -5)
 
-
 if __name__ == '__main__':
     unittest.main(verbosity=2)
