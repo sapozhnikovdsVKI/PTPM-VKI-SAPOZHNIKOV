@@ -118,7 +118,7 @@ class TestTriangleIntegration(unittest.TestCase):
         """
         # Создаем сервис который всегда падает
         failing_service = MockExternalService(should_succeed=False)
-        self.controller.external = failing_service
+        self.controller.external_service = failing_service
         
         # Вызываем контроллер
         triangle_type, coordinates, error = self.controller.process_triangle("3", "4", "5")
