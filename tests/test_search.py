@@ -2,9 +2,7 @@ import unittest
 import os
 from datetime import datetime
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
-from webdriver_manager.chrome import ChromeDriverManager
 from pages.search_page import SearchFilterPage
 
 
@@ -15,26 +13,18 @@ class TestSearchFilter(unittest.TestCase):
     SCREENSHOTS_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "screenshots")
 
     def setUp(self):
-        """Инициализация браузера перед каждым тестом"""
-        chrome_options = Options()
-        chrome_options.add_argument("--headless=new")
-        chrome_options.add_argument("--no-sandbox")
-        chrome_options.add_argument("--disable-dev-shm-usage")
-        chrome_options.add_argument("--window-size=1920,1080")
-
-        self.driver = webdriver.Chrome(
-            service=Service(ChromeDriverManager().install()),
-            options=chrome_options
-        )
-        self.driver.implicitly_wait(5)
-        self.page = SearchFilterPage(self.driver).open()
-
-        # Создаём папку для скриншотов если её нет
         os.makedirs(self.SCREENSHOTS_DIR, exist_ok=True)
 
+        chrome_options = Options()
+        # Без --headless=new Chrome откроется с видимым окном.
+        self.driver = webdriver.Chrome(options=chrome_options)
+        self.addCleanup(self.driver.quit)
+        self.driver.implicitly_wait(5)
+
+        self.page = SearchFilterPage(self.driver)
+        self.page.open()
+
     def tearDown(self):
-        """Закрытие сессии браузера после каждого теста"""
-        # Делаем скриншот после каждого теста
         self.take_screenshot()
 
         if self.driver:

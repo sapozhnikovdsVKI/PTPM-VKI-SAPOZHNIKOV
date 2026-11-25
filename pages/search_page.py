@@ -6,14 +6,35 @@ from selenium.webdriver.support import expected_conditions as EC
 class SearchFilterPage:
     """Page Object для страницы Search Filter"""
 
-    URL = "https://www.globalsqa.com/angularjs-protractor/SearchFilter/"
+    URL = "https://www.globalsqa.com/angularJs-protractor/SearchFilter/"
 
     # === Локаторы элементов (приватные) ===
-    _PAYEE_INPUT = (By.CSS_SELECTOR, "input[ng-model*='payee']")
-    _ACCOUNT_SELECT = (By.CSS_SELECTOR, "select[ng-model*='account']")
-    _TYPE_SELECT = (By.CSS_SELECTOR, "select[ng-model*='type']")
-    _EXPENDITURE_INPUT = (By.CSS_SELECTOR, "input[ng-model*='expenditure']")
-    _TABLE_ROWS = (By.CSS_SELECTOR, "table tbody tr")
+    _PAYEE_INPUT = (By.ID, "input1")
+    _ACCOUNT_SELECT = (By.ID, "input2")
+    _TYPE_SELECT = (By.ID, "input3")
+    _EXPENDITURE_INPUT = (By.ID, "input4")
+
+    _RESULTS_TABLE = (
+        By.XPATH,
+        "//h3[normalize-space()='Search Results']/following::table[1]",
+    )
+    _TABLE_ROWS = (By.CSS_SELECTOR, "tbody tr:has(td)")
+
+    def _get_rows(self):
+        table = self.wait.until(
+            EC.visibility_of_element_located(self._RESULTS_TABLE)
+        )
+        return table.find_elements(*self._TABLE_ROWS)
+
+    def get_row_count(self) -> int:
+        return len(self._get_rows())
+
+    def get_row_text(self, index: int) -> str:
+        return self._get_rows()[index].text
+
+    def get_all_rows_text(self) -> list[str]:
+        return [row.text for row in self._get_rows()]
+
 
     def __init__(self, driver):
         """Инициализация Page Object"""
@@ -64,20 +85,6 @@ class SearchFilterPage:
         field.clear()
         return self
 
-    def get_row_count(self) -> int:
-        """Вернуть количество строк в таблице результатов"""
-        rows = self.wait.until(EC.presence_of_all_elements_located(self._TABLE_ROWS))
-        return len(rows)
-
-    def get_row_text(self, index: int) -> str:
-        """Вернуть текст строки таблицы по индексу (0-based)"""
-        rows = self.wait.until(EC.presence_of_all_elements_located(self._TABLE_ROWS))
-        return rows[index].text
-
-    def get_all_rows_text(self) -> list:
-        """Вернуть список текстов всех строк таблицы"""
-        rows = self.wait.until(EC.presence_of_all_elements_located(self._TABLE_ROWS))
-        return [row.text for row in rows]
 
     def is_result_present(self, expected_text: str) -> bool:
         """Проверить, есть ли в результатах строка с ожидаемым текстом"""
